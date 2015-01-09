@@ -1,6 +1,9 @@
 package com.brynharding.cloudantdemo;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -53,6 +56,10 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Google
         setContentView(R.layout.activity_main);
         ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_spinner);
+
+        if (!networkConnected(this)) {
+            Toast.makeText(this, R.string.no_network, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -203,4 +210,11 @@ public class MainActivity extends Activity implements OnMapReadyCallback, Google
             mProgressBar.setVisibility(View.INVISIBLE);
         }
     }
+
+    public static boolean networkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
 }
